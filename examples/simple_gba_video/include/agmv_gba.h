@@ -37,25 +37,25 @@ typedef struct File{
 #define SEEK_CUR 1
 
 /*--------------GBA FILE I/O ROUTINES----------------*/
-Bool IWRAM AGMV_EOF(File* file){
+Bool IWRAM_DATA AGMV_EOF(File* file){
 	if(file->pos + 1 >= file->len){
 		return TRUE;
 	}
 	else return FALSE;
 }
 
-static inline u8 IWRAM AGMV_ReadByte(File* file){
+static inline u8 IWRAM_DATA AGMV_ReadByte(File* file){
 	return file->data[file->pos++];
 }
 
-static inline u16 IWRAM AGMV_ReadShort(File* file){
+static inline u16 IWRAM_DATA AGMV_ReadShort(File* file){
 	u8 lsb = AGMV_ReadByte(file);
 	u8 msb = AGMV_ReadByte(file);
 	
 	return msb << 8 | lsb;
 }
 
-static inline u32 IWRAM AGMV_ReadLong(File* file){
+static inline u32 IWRAM_DATA AGMV_ReadLong(File* file){
 	u8 lsb = AGMV_ReadByte(file);
 	u8 lsb2 = AGMV_ReadByte(file);
 	u8 msb1 = AGMV_ReadByte(file);
@@ -68,7 +68,7 @@ u32 bitbuf = 0,
     bitsin = 0,
     masks[17] = {0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535};
 		
-static inline u32 IWRAM AGMV_ReadBits(File* file, u32 num_of_bits){
+static inline u32 IWRAM_DATA AGMV_ReadBits(File* file, u32 num_of_bits){
 	register u32 i;
 
 	i = bitbuf >> (8 - bitsin);
@@ -96,11 +96,11 @@ void Open(File* file, const u8* data, u32 len){
 	file->data = data;
 }
 
-static inline u32 IWRAM tell(File* file){
+static inline u32 IWRAM_DATA tell(File* file){
 	return file->pos;
 }
 
-static inline void IWRAM seek(File* file, u32 offset, u8 mode){
+static inline void IWRAM_DATA seek(File* file, u32 offset, u8 mode){
 	if(mode == SEEK_SET){
 		file->pos = offset;
 	}
@@ -120,7 +120,7 @@ void read(File* file, u8* buf, u32 count){
 	}
 }
 
-static inline void IWRAM AGMV_ReadFourCC(File* file, char fourcc[4]){
+static inline void IWRAM_DATA AGMV_ReadFourCC(File* file, char fourcc[4]){
 	fourcc[0] = AGMV_ReadByte(file);
 	fourcc[1] = AGMV_ReadByte(file);
 	fourcc[2] = AGMV_ReadByte(file);
@@ -302,14 +302,14 @@ void play_sound(const signed char* sound, int total_samples, int sample_rate, ch
 
 /*-----------AGMV FILE UTILITY FUNCTIONS----------------*/
 
-static inline Bool IWRAM AGMV_IsCorrectFourCC(char fourcc[4], char f, char o, char u, char r){
+static inline Bool IWRAM_DATA AGMV_IsCorrectFourCC(char fourcc[4], char f, char o, char u, char r){
 	if(f != fourcc[0] || o != fourcc[1] || u != fourcc[2] || r != fourcc[3]){
 		return FALSE;
 	}
 	else return TRUE;
 }
 
-static inline void IWRAM AGMV_FindNextFrameChunk(File* file){
+static inline void IWRAM_DATA AGMV_FindNextFrameChunk(File* file){
 	u32 pos;
 	Bool isFrame;
 	char fourcc[4];
@@ -337,7 +337,7 @@ static inline void IWRAM AGMV_FindNextFrameChunk(File* file){
 	seek(file,pos-4,SEEK_SET);
 }
 
-static inline void IWRAM AGMV_FindNextAudioChunk(File* file){
+static inline void IWRAM_DATA AGMV_FindNextAudioChunk(File* file){
 	u32 pos;
 	Bool isAudio;
 	char fourcc[4];
@@ -630,7 +630,7 @@ void DestroyAGMV(AGMV* agmv){
 	}
 }
 
-int IWRAM AGMV_DecodeFrameChunk(File* file, AGMV* agmv){
+int IWRAM_DATA AGMV_DecodeFrameChunk(File* file, AGMV* agmv){
 	u32 i, pos, bitpos = 0, bpos = 0, size = agmv->header.width * agmv->header.height, usize, csize, width, height, bits, num_of_bits;
 	u16 offset, palette0[256], palette1[256], color;
 	u16* img_data, *iframe_data, *palette;
@@ -903,7 +903,7 @@ int IWRAM AGMV_DecodeFrameChunk(File* file, AGMV* agmv){
 	return NO_ERR;
 }
 
-int IWRAM AGMV_DecodeAudioChunk(File* file, AGMV* agmv){
+int IWRAM_DATA AGMV_DecodeAudioChunk(File* file, AGMV* agmv){
 	u32 i, size;
 	u8 sample;
 	
@@ -944,7 +944,7 @@ void AGMV_ResetVideo(File* file, AGMV* agmv){
 	agmv->frame_count = 0;
 }
 
-Bool IWRAM AGMV_IsVideoDone(AGMV* agmv){
+Bool IWRAM_DATA AGMV_IsVideoDone(AGMV* agmv){
 	if(agmv->frame_count >= agmv->header.num_of_frames){
 		return TRUE;
 	}
@@ -1007,7 +1007,7 @@ void AGMV_SkipTo(File* file, AGMV* agmv, int n){
 	}
 }
 
-static inline void IWRAM AGMV_PlayAGMV(File* file, AGMV* agmv){
+static inline void IWRAM_DATA AGMV_PlayAGMV(File* file, AGMV* agmv){
 	if(agmv->header.total_audio_duration != 0){
 		AGMV_FindNextFrameChunk(file);
 		agmv->offset_table[agmv->frame_count] = tell(file);
@@ -1034,7 +1034,7 @@ static inline void IWRAM AGMV_PlayAGMV(File* file, AGMV* agmv){
 	}
 }
 
-void IWRAM AGMV_DisplayFrame(u16* vram, u16 width, u16 height, AGMV* agmv){
+void IWRAM_DATA AGMV_DisplayFrame(u16* vram, u16 width, u16 height, AGMV* agmv){
 	u16 frame_width = agmv->frame->width;
 	u16 frame_height = agmv->frame->height;
 	u16 yoffset, y2w;

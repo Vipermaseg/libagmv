@@ -4,7 +4,7 @@
 #define VRAM_F  0x6000000 
 #define VRAM_B	0x600A000
 
-int IWRAM main(){
+int IWRAM_DATA main(){
 	
 	SetVideoMode(AGMV_MODE_3);
 	EnableTimer2();  	
@@ -18,7 +18,7 @@ int IWRAM main(){
 	
 	File* file = (File*)malloc(sizeof(File));
 	
-	Open(file,GBA_AGMV_FILE,10676238);
+	Open(file,GBA_AGMV_FILE,449840);
 	
 	AGMV* agmv = AGMV_AllocResources(file);
 	

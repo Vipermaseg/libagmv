@@ -1,7 +1,7 @@
 CC = gcc
 INCLUDES = -I"$(CURDIR)/extern/agidl/include" -I"$(CURDIR)/include"
 CFLAGS = -Wall -O2 $(INCLUDES)
-LDFLAGS = -L"$(CURDIR)/extern/agidl/lib" -lagidl
+LDFLAGS = -L"$(CURDIR)/extern/agidl/lib" -lagidl -lm
 DEPS = include/agmv_utils.h \
 		include/agmv_encode.h \
 		include/agmv_decode.h \

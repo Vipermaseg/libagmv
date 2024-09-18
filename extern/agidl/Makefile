@@ -1,7 +1,7 @@
 CC = gcc
 INCS = -I"$(CURDIR)/include"
 CFLAGS = -Wall -O2 $(INCS)
-LDFLAGS = 
+LDFLAGS = -lm
 OBJFILES = src/agidl_math_utils.o \
 		src/agidl_cc_manager.o \
 		src/agidl_cc_converter.o \
