@@ -929,7 +929,8 @@ void SetVideoMode(u8 mode){
 	*(u16*)0x4000000 = 0x400 | mode; 
 }
 
-void EnableTimer2(){	
+void EnableTimers(){	
+	*(u16*)0x4000108=-0x4000;
 	*(u16*)0x400010A = 0x82;
 	*(u16*)0x400010E = 0x84;
 }

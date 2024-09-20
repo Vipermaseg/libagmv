@@ -3,22 +3,23 @@
 
 #define VRAM_F  0x6000000 
 #define VRAM_B	0x600A000
+#define RATE 1
 
 int IWRAM_DATA main(){
 	
 	SetVideoMode(AGMV_MODE_3);
-	EnableTimer2();  	
+	EnableTimers();
 	
-	int lastFr=0,FPS=0;  
+	int lastFr=-1,FPS=0;  
 	
 	REG_BG2PA = 128;
 	REG_BG2PD = 128;
-	 
+
 	u16* vram = (u16*)VRAM_F;
 	
 	File* file = (File*)malloc(sizeof(File));
 	
-	Open(file,GBA_AGMV_FILE,449840);
+	Open(file,GBA_AGMV_FILE,4790547);
 	
 	AGMV* agmv = AGMV_AllocResources(file);
 	
@@ -39,7 +40,7 @@ int IWRAM_DATA main(){
 		
 		scanKeys();
 		
-		if((REG_TM2CNT/6600)!=lastFr){
+		if((REG_TM3CNT/RATE)!=lastFr){
 
 			if(button_pressed(BUTTON_RIGHT)){
 				AGMV_SkipForwards(file,agmv,10);
@@ -69,8 +70,8 @@ int IWRAM_DATA main(){
 			   AGMV_ResetVideo(file,agmv);
 		   }
 		   
-		   FPS+=1; if(lastFr>(REG_TM2CNT/6600)){ FPS=0;}
-		   lastFr=(REG_TM2CNT/6600);  
+		   FPS+=1; if(lastFr>(REG_TM3CNT/RATE)){ FPS=0;}
+		   lastFr=(REG_TM3CNT/RATE);  
 
 			VBlankIntrWait();		   
 		}		
