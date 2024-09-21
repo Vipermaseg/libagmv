@@ -37,24 +37,55 @@
 # }AGMV_COMPRESSION;
 
 # Loop through all mp4 files
+#!/bin/bash
+
+# Video parameters
+FPS=8
+HEIGHT=160
+WIDTH=240
+PIX_FMT="pal8"
+
+# Audio parameters
+AUDIO_SAMPLE_RATE=16000
+
+# AGMV parameters (you may want to make these configurable too)
+AGMV_OPT=6
+AGMV_QUALITY=3
+AGMV_COMPRESSION=1
+
+# Loop through all mp4 files
 cd raw_videos
 for file in *.mp4; do
-  # Extract the filename without the extension
-  filename="${file%.*}"
-  
-  # Create a directory for the frames output
-  mkdir -p ../output/"$filename"
-  
-  # Run ffmpeg to process the video
-  ffmpeg -y -i "$file" \
-    -filter:v "fps=8,scale=-1:160,crop=240:160" \
-    -map 0:v -c:v bmp -pix_fmt pal8 ../output/"$filename"/frame_%d.bmp \
-    -map 0:a -ac 1 -ar 16000 -acodec pcm_s8 -f s8 ../output/"$filename.raw"
-  ../main 1724 240 160 8 ../output/"$filename.raw" 16000 ../output/"$filename.agmv" ../output/"$filename" frame_ 1 6 3 1
-  mv -f GBA_GEN_AGMV.h ../output/"$filename.h"
+    # Extract the filename without the extension
+    filename="${file%.*}"
+    
+    # Create a directory for the frames output
+    mkdir -p ../output/"$filename"
+    
+    # Run ffmpeg to process the video
+    ffmpeg -y -i "$file" \
+    -filter:v "fps=$FPS,scale=-1:$HEIGHT,crop=$WIDTH:$HEIGHT" \
+    -map 0:v -c:v bmp -pix_fmt $PIX_FMT ../output/"$filename"/frame_%d.bmp \
+    -map 0:a -ac 1 -ar $AUDIO_SAMPLE_RATE -acodec pcm_s8 -f s8 ../output/"$filename.raw"
+
+    # Count the number of generated BMP files
+    TOTAL_FRAMES=$(ls -1 ../output/"$filename"/frame_*.bmp | wc -l)
+    
+    # Run the AGMV conversion
+    ../main $TOTAL_FRAMES $WIDTH $HEIGHT $FPS ../output/"$filename.raw" $AUDIO_SAMPLE_RATE \
+    ../output/"$filename.agmv" ../output/"$filename" frame_ 1 $AGMV_OPT $AGMV_QUALITY $AGMV_COMPRESSION
+    
+    # Move the generated header file
+    mv -f GBA_GEN_AGMV.h ../output/"$filename.h"
 done
+
+# Copy the header file to the simple_gba_video project
 cp ../output/"$filename.h" ../../simple_gba_video/include/GBA_GEN_AGMV.h
+
+# Build the GBA project
 cd ../../simple_gba_video
 make clean
 make
+
+# Move the built GBA file
 mv simple_gba_video.gba ../simple_gba_encoding/output/"$filename.gba"
