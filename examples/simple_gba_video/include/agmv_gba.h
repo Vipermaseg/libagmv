@@ -930,8 +930,9 @@ void SetVideoMode(u8 mode){
 }
 
 void EnableTimers(){	
-	*(u16*)0x4000108=-0x4000;
-	*(u16*)0x400010A = 0x82;
+	REG_TM3CNT_H = 0;
+	*(u16*)0x4000108=(-0x1000);
+	*(u16*)0x400010A = 0x83;
 	*(u16*)0x400010E = 0x84;
 }
 

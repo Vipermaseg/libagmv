@@ -8,7 +8,7 @@ int main(){
 	
 	AGMV* agmv = CreateAGMV(num_of_frames-1,width,height,fps);
 	AGMV_RawSignedPCMToAudioTrack("videoplayback.raw",agmv,1,16000);
-	AGMV_EncodeAGMV(agmv,"videoplaybackniAudioANIM.agmv","output/videoplayback","frame_",AGMV_IMG_BMP,1,num_of_frames,width,height,fps,AGMV_OPT_GBA_II,AGMV_LOW_QUALITY,AGMV_LZSS_COMPRESSION);
+	(agmv,"videoplaybackniAudioANIM.agmv","output/videoplayback","frame_",AGMV_IMG_BMP,1,num_of_frames,width,height,fps,AGMV_OPT_GBA_II,AGMV_LOW_QUALITY,AGMV_LZSS_COMPRESSION);
 	
 	return 0;
 }
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 
     AGMV* agmv = CreateAGMV(num_of_frames - 1, width, height, fps);
     AGMV_RawSignedPCMToAudioTrack(input_audio_file, agmv, 1, audio_sample_rate);
-    AGMV_EncodeAGMV(agmv, output_agmv_file, output_frame_directory, output_frame_prefix, img_format, 1, num_of_frames, width, height, fps, gba_option, quality_option, compression_option);
+    (agmv, output_agmv_file, output_frame_directory, output_frame_prefix, img_format, 1, num_of_frames, width, height, fps, gba_option, quality_option, compression_option);
 
     return 0;
 }

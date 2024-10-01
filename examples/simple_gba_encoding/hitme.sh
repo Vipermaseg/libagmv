@@ -41,12 +41,15 @@
 
 # Video parameters
 FPS=8
-HEIGHT=160
-WIDTH=240
-PIX_FMT="pal8"
+HEIGHT=80
+WIDTH=120
+#8bit
+PIX_FMT="rgb8"
+#16bit
+#PIX_FMT="rgb555be"
 
 # Audio parameters
-AUDIO_SAMPLE_RATE=16000
+AUDIO_SAMPLE_RATE=16384
 
 # AGMV parameters (you may want to make these configurable too)
 AGMV_OPT=6
